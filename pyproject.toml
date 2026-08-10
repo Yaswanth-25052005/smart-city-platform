@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smart-city-platform"
+version = "0.1.0"
+description = "Big Data Analytics Platform for Smart Cities"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "kafka-python>=2.2.15",
+    "pymongo>=4.15.0",
+    "fastapi>=0.116.1",
+    "uvicorn[standard]>=0.35.0",
+    "streamlit>=1.48.1",
+    "pandas>=2.3.2",
+    "numpy>=2.3.2",
+    "python-dotenv>=1.1.1",
+    "pydantic>=2.11.7",
+    "plotly>=6.3.0",
+    "pyyaml>=6.0.2",
+    "httpx>=0.28.1",
+    "requests>=2.32.5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.0", "pytest-asyncio>=0.24.0"]
+spark = ["pyspark>=3.5.3"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["backend*", "dashboard*", "scripts*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
