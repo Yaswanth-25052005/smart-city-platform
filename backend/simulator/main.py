@@ -1,30 +1,17 @@
-# backend/simulator/main.py
-
 import time
-
 from backend.simulator.device import VirtualESP32
 from backend.kafka.producer import publish
+from backend.config.settings import SIMULATOR_INTERVAL_SECONDS, SIMULATOR_DEVICE_COUNT
 
-devices = [
+devices = [VirtualESP32(f"ESP32_{str(i+1).zfill(2)}") for i in range(SIMULATOR_DEVICE_COUNT)]
 
-    VirtualESP32("ESP32_01"),
+print(f"Starting Virtual Smart City with {SIMULATOR_DEVICE_COUNT} devices...\n")
 
-    VirtualESP32("ESP32_02"),
-
-    VirtualESP32("ESP32_03"),
-
-    VirtualESP32("ESP32_04"),
-
-    VirtualESP32("ESP32_05")
-
-]
-
-print("Starting Virtual Smart City...\n")
-
-while True:
-    for device in devices:
-        data = device.read_sensor()
-        publish(data)
-        print(f"Sent: {data}")
-
-    time.sleep(3)
+if __name__ == "__main__":
+    while True:
+        for device in devices:
+            data = device.read_sensor()
+            publish(data)
+            print(f"Sent: {data}")
+            
+        time.sleep(SIMULATOR_INTERVAL_SECONDS)

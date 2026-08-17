@@ -122,7 +122,8 @@ def test_invalid_boolean_values():
 def test_simulator_generated_event():
     # 10. Simulator-generated event validation
     from backend.simulator.sensor_generator import SensorGenerator
-    data = SensorGenerator.generate("ESP32_TEST")
+    generator = SensorGenerator("ESP32_TEST")
+    data = generator.generate()
     sensor = SensorEvent(**data)
     assert sensor.device_id == "ESP32_TEST"
     assert sensor.location_id in ["ZONE_A", "ZONE_B", "ZONE_C", "ZONE_D"]
@@ -131,7 +132,8 @@ def test_simulator_generated_event():
 def test_validation_service():
     # 11 & 12. Kafka serialization/deserialization & Consumer validation
     from backend.simulator.sensor_generator import SensorGenerator
-    data = SensorGenerator.generate("ESP32_TEST")
+    generator = SensorGenerator("ESP32_TEST")
+    data = generator.generate()
     
     # Should not raise exception
     validated = ValidationService.validate(data)
