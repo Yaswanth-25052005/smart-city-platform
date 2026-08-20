@@ -8,5 +8,6 @@ db = client[DATABASE_NAME]
 sensor_collection = db["sensor_data"]
 analytics_collection = db["analytics"]
 prediction_collection = db["predictions"]
+alerts_collection = db["alerts"]
 
 print("MongoDB Connected")

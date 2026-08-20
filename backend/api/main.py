@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api.routes import health
+from backend.api.routes import health, alerts
 from backend.common.logging import get_logger, setup_logging
 
 logger = get_logger(__name__)
@@ -35,6 +35,7 @@ app.add_middleware(
 )
 
 app.include_router(health.router)
+app.include_router(alerts.router, prefix="/api/alerts", tags=["alerts"])
 
 
 @app.get("/")
