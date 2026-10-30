@@ -72,7 +72,8 @@ class AlertService:
         location_id: Optional[str] = None,
         severity: Optional[str] = None
     ) -> List[Dict[str, Any]]:
-        filters = {}
+        from backend.config.settings import ACTIVE_DEVICES
+        filters = {"device_id": {"$in": ACTIVE_DEVICES}}
         if status:
             filters["status"] = status
         if alert_type:

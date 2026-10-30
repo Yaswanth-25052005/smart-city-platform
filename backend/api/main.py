@@ -5,7 +5,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api.routes import health, alerts, sensors, analytics, dashboard, devices, locations
+from backend.api.routes import health, alerts, sensors, analytics, dashboard, devices, locations, predictions
+
 from backend.common.logging import get_logger, setup_logging
 
 logger = get_logger(__name__)
@@ -41,6 +42,7 @@ app.include_router(analytics.router, prefix="/api/analytics", tags=["analytics"]
 app.include_router(dashboard.router, prefix="/api/dashboard", tags=["dashboard"])
 app.include_router(devices.router, prefix="/api/devices", tags=["devices"])
 app.include_router(locations.router, prefix="/api/locations", tags=["locations"])
+app.include_router(predictions.router, prefix="/api/predictions", tags=["predictions"])
 
 
 @app.get("/")

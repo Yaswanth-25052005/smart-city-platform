@@ -9,7 +9,7 @@ def test_valid_sensor_event():
     # 1. Valid SensorEvent
     data = {
         "event_id": str(uuid4()),
-        "device_id": "ESP32_01",
+        "device_id": "ESP32_ENV_01",
         "location_id": "ZONE_A",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "temperature": 28.5,
@@ -20,12 +20,12 @@ def test_valid_sensor_event():
         "streetlight_on": True
     }
     sensor = SensorEvent(**data)
-    assert sensor.device_id == "ESP32_01"
+    assert sensor.device_id == "ESP32_ENV_01"
 
 def test_missing_event_id():
     # 2. Missing event_id
     data = {
-        "device_id": "ESP32_01",
+        "device_id": "ESP32_ENV_01",
         "location_id": "ZONE_A",
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
@@ -37,7 +37,7 @@ def test_invalid_uuid():
     # 3. Invalid UUID
     data = {
         "event_id": "not-a-uuid",
-        "device_id": "ESP32_01",
+        "device_id": "ESP32_ENV_01",
         "location_id": "ZONE_A",
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
@@ -60,7 +60,7 @@ def test_missing_location_id():
     # 5. Missing location_id
     data = {
         "event_id": str(uuid4()),
-        "device_id": "ESP32_01",
+        "device_id": "ESP32_ENV_01",
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
     with pytest.raises(ValidationError) as exc:
@@ -71,7 +71,7 @@ def test_invalid_timestamp():
     # 6. Invalid timestamp
     data = {
         "event_id": str(uuid4()),
-        "device_id": "ESP32_01",
+        "device_id": "ESP32_ENV_01",
         "location_id": "ZONE_A",
         "timestamp": "not-a-date"
     }
@@ -83,7 +83,7 @@ def test_nullable_sensor_values():
     # 7. Nullable sensor values
     data = {
         "event_id": str(uuid4()),
-        "device_id": "ESP32_01",
+        "device_id": "ESP32_ENV_01",
         "location_id": "ZONE_A",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "temperature": None,
@@ -97,7 +97,7 @@ def test_invalid_numeric_values():
     # 8. Invalid numeric values
     data = {
         "event_id": str(uuid4()),
-        "device_id": "ESP32_01",
+        "device_id": "ESP32_ENV_01",
         "location_id": "ZONE_A",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "temperature": "too_hot"
@@ -110,7 +110,7 @@ def test_invalid_boolean_values():
     # 9. Invalid boolean values
     data = {
         "event_id": str(uuid4()),
-        "device_id": "ESP32_01",
+        "device_id": "ESP32_ENV_01",
         "location_id": "ZONE_A",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "parking_occupied": "maybe"
@@ -122,17 +122,17 @@ def test_invalid_boolean_values():
 def test_simulator_generated_event():
     # 10. Simulator-generated event validation
     from backend.simulator.sensor_generator import SensorGenerator
-    generator = SensorGenerator("ESP32_TEST")
+    generator = SensorGenerator("ESP32_ENV_01")
     data = generator.generate()
     sensor = SensorEvent(**data)
-    assert sensor.device_id == "ESP32_TEST"
+    assert sensor.device_id == "ESP32_ENV_01"
     assert sensor.location_id in ["ZONE_A", "ZONE_B", "ZONE_C", "ZONE_D"]
     assert sensor.temperature is not None
 
 def test_validation_service():
     # 11 & 12. Kafka serialization/deserialization & Consumer validation
     from backend.simulator.sensor_generator import SensorGenerator
-    generator = SensorGenerator("ESP32_TEST")
+    generator = SensorGenerator("ESP32_ENV_01")
     data = generator.generate()
     
     # Should not raise exception

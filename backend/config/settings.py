@@ -44,3 +44,6 @@ LOG_LEVEL = _get_env("LOG_LEVEL", "INFO")
 
 # ML (optional — Phase 7)
 ML_ENABLED = _get_env("ML_ENABLED", "false").lower() in {"1", "true", "yes"}
+
+# Final Physical Architecture Configuration
+ACTIVE_DEVICES = ["ESP32_ENV_01", "ESP32_TRAFFIC_01"]

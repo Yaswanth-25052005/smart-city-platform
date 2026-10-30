@@ -4,7 +4,7 @@ from backend.config.settings import SIMULATOR_INTERVAL_SECONDS
 
 class SensorSimulator:
     def __init__(self):
-        self.device = VirtualESP32("ESP32_01")
+        self.device = VirtualESP32("ESP32_ENV_01")
 
     def generate_data(self):
         return self.device.read_sensor()

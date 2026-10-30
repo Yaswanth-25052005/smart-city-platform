@@ -1,3 +1,4 @@
+
 x-app-environment: &app-environment
   MONGO_URI: mongodb://${MONGO_USER:-admin}:${MONGO_PASSWORD:-password}@mongodb:27017/
   DATABASE_NAME: ${MONGO_DATABASE:-smart_city}
@@ -206,6 +207,37 @@ services:
       <<: *app-environment
       SIMULATOR_INTERVAL_SECONDS: ${SIMULATOR_INTERVAL_SECONDS:-3}
     command: ["python", "-m", "backend.simulator.main"]
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: smartcity-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+
+  mqtt-kafka-bridge:
+    build:
+      context: .
+      dockerfile: docker/mqtt-bridge/Dockerfile
+    container_name: smartcity-mqtt-kafka-bridge
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+      mosquitto:
+        condition: service_started
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: "1883"
+      MQTT_TOPIC: smartcity/+/telemetry
+      KAFKA_BOOTSTRAP: kafka:29092
+      KAFKA_TOPIC: ${KAFKA_SENSOR_TOPIC:-smartcity.sensor_data}
+      MQTT_CLIENT_ID: smartcity-mqtt-kafka-bridge
+      LOG_LEVEL: INFO
 
 volumes:
   mongodb_data:

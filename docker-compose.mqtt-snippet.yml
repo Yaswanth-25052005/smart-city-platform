@@ -1,0 +1,38 @@
+# Merge these services into your existing docker-compose.yml.
+# Add "mosquitto" and "mqtt-kafka-bridge" under services: (do not replace your existing services).
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: smartcity-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -p 1883 -t '$$SYS/broker/version' -C 1 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  mqtt-kafka-bridge:
+    build:
+      context: .
+      dockerfile: docker/mqtt-bridge/Dockerfile
+    container_name: smartcity-mqtt-kafka-bridge
+    restart: unless-stopped
+    depends_on:
+      mosquitto:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: "1883"
+      MQTT_TOPIC: smartcity/+/telemetry
+      KAFKA_BOOTSTRAP: kafka:29092
+      KAFKA_TOPIC: ${KAFKA_SENSOR_TOPIC:-smartcity.sensor_data}
+      MQTT_CLIENT_ID: smartcity-mqtt-kafka-bridge
+      LOG_LEVEL: INFO

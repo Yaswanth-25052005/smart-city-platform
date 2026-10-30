@@ -4,7 +4,7 @@ from backend.database.repository import SensorRepository
 
 sample = {
     "event_id": "123e4567-e89b-12d3-a456-426614174000",
-    "device_id": "ESP32_01",
+    "device_id": "ESP32_ENV_01",
     "location_id": "ZONE_A",
     "temperature": 30.5,
     "humidity": 61,

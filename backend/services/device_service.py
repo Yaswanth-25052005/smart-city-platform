@@ -44,7 +44,8 @@ class DeviceService:
         # We can query it by looking at sensor_collection directly, but let's just do a distinct directly here 
         # or mock it up. Actually, we'll query sensor_collection for distinct devices in location.
         
-        devices_in_loc = sensor_collection.distinct("device_id", {"location_id": location_id})
+        from backend.config.settings import ACTIVE_DEVICES
+        devices_in_loc = sensor_collection.distinct("device_id", {"location_id": location_id, "device_id": {"$in": ACTIVE_DEVICES}})
         
         return LocationInfo(
             location_id=location_id,
